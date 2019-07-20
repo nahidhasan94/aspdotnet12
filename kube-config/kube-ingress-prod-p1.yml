@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: aspdotnet12
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  tls:
+  - hosts:
+    - prod-p1.pd
+    secretName: tls-secret
+  rules:
+  - host: prod-p1.pd
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: aspdotnet12
+          servicePort: 9081
+      - path: /*
+        backend:
+          serviceName: aspdotnet12
+          servicePort: 9081

@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: aspdotnet12
+  namespace: default
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+  minReadySeconds: 25
+  template:
+    metadata:
+      labels:
+        app: aspdotnet12
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '8081'
+        prometheus.io/path: '/prometheus'
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: aspdotnet12
+        imagePullPolicy: Always
+        image: cloudslip/aspdotnet12:latest
+        env:
+        - name: GIT_COMMIT
+          value: 'GIT_COMMIT_VARIABLE'
+        - name: SPRING_PROFILE
+          value: "SPRING_PROFILE_VARIABLE"
+        ports:
+        - containerPort: 9081
+        - containerPort: 8081
+      imagePullSecrets:
+        - name: regcred
